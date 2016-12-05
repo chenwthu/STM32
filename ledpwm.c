@@ -57,11 +57,11 @@ void LED_Off(void) {
 	GPIO_ResetBits(GPIO_Port_LED, GPIO_Pin_LED);
 }
 
-void LED_SetIntensity(u16 intensity) {
+void LED_SetIntensity(u8 intensity) {
 	if (intensity > 100) intensity = 100; // intensity范围0~100
 	if (intensity == 0) LED_Off();
 	else {
-		TIM_SetCompare2(TIM2, TIM2->ARR * intensity / 100);
+		TIM_SetCompare2(TIM2, (u16)((u32)TIM2->ARR * intensity / 100));
 		LED_On();
 	}
 }
