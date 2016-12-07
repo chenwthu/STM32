@@ -81,6 +81,22 @@ void USART1_IRQHandler(void) {
 	}
 }
 
+void Serial_Read(u8 *data) {
+	u8 i;
+	
+	for (i = 0; i < (USART_RX_STA & 0x3F); ++i) data[i] = USART_RX_BUF[i];
+}
+
+void Serial_Write(u8 *data) {
+	u8 i;
+	
+	for (i = 0; i < (USART_RX_STA & 0x3F); ++i) {
+		USART_SendData(USART1, USART_RX_BUF[i]);
+		while (USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET);
+	}
+	USART_RX_STA = 0;
+}
+
 /**** support printf ****/
 #pragma import(__use_no_semihosting)
 struct __FILE { int handle; };
@@ -93,16 +109,5 @@ int fputc(int ch, FILE *f) {
 /************************/
 
 void Serial_Print(char *data) {
-	u8 i;
-	
-	if ((USART_RX_STA & 0x8000) == 0) printf("%s\r\n", data); // 等待接收数据
-	else {
-		printf("Received: ");
-		for (i = 0; i < (USART_RX_STA & 0x3F); ++i) {
-			USART_SendData(USART1, USART_RX_BUF[i]); // 发送数据
-			while (USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET); // 等待发送完成
-		}
-		printf("\r\n");
-		USART_RX_STA = 0;
-	}
+	printf("%s\r\n", data);
 }
