@@ -74,10 +74,9 @@ void TM1637_Start(void) {
 
 void TM1637_Stop(void) {
 	TM1637_DIOOut();
-	GPIO_ResetBits(GPIO_Port_CLK, GPIO_Pin_CLK);
+	GPIO_SetBits(GPIO_Port_CLK, GPIO_Pin_CLK);
 	GPIO_ResetBits(GPIO_Port_DIO, GPIO_Pin_DIO);
 	Delay(1);
-	GPIO_SetBits(GPIO_Port_CLK, GPIO_Pin_CLK);
 	GPIO_SetBits(GPIO_Port_DIO, GPIO_Pin_DIO);
 }
 
